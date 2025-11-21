@@ -1,6 +1,12 @@
 //express setup
+require('dotenv').config();
 const express = require("express");
 const app = express();
+ 
+const MongoStore= require("connect-mongo"); 
+
+const dbUrl = process.env.MONGO_URI;
+
 
 let port = "8080";
 
@@ -19,7 +25,8 @@ main().then((res) => {
     })
 
 async function main() {
-    await mongoose.connect("mongodb+srv://DataCreater:Gaurav123patel@cluster0.4prt00h.mongodb.net/?appName=Cluster0");
+    await mongoose.connect(dbUrl);
+
 }
 
 //listing js require
@@ -83,8 +90,21 @@ const Localstrategy = require("passport-local")
 //user model
 const User = require("./models/user.js")
 
+const store = MongoStore.create({
+    mongoUrl : dbUrl,
+    crypto: {
+        secret: "mysupersecretstring",
+    },
+    touchAfter: 24*3600
+
+})
+
+store.on("error", ()=>{
+    console.log("ERROR in MONGO SRORE",err);
+});
 
 const sessionOption = {
+    store,
     secret: "mysupersecretstring",
     resave: false,
     saveUninitialized: true,
@@ -94,6 +114,8 @@ const sessionOption = {
         httpOnly: true
     }
 };
+
+
 
 app.use(session(sessionOption));
 app.use(flash());
