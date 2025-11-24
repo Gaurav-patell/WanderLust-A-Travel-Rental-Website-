@@ -2,6 +2,9 @@
 require('dotenv').config();
 const express = require("express");
 const app = express();
+
+//express-session
+const session = require("express-session");
  
 const MongoStore= require("connect-mongo"); 
 
@@ -75,8 +78,7 @@ const reviewsRouter = require("./routes/review.js");
 //user.js
 const userRouter = require("./routes/user.js");
 
-//express-session
-const session = require("express-session");
+
 
 //flash 
 const flash = require("connect-flash");
@@ -92,9 +94,9 @@ const User = require("./models/user.js")
 
 const store = MongoStore.create({
     mongoUrl : dbUrl,
-    crypto: {
-        secret: "mysupersecretstring",
-    },
+    /*crypto: {
+        secret: process.env.SECRET,
+    },*/
     touchAfter: 24*3600
 
 })
@@ -105,7 +107,7 @@ store.on("error", ()=>{
 
 const sessionOption = {
     store,
-    secret: "mysupersecretstring",
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
