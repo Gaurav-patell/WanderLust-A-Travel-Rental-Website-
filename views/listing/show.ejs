@@ -96,6 +96,11 @@
                                     <%= review.rating %> star
 
                                 </p>
+
+                                       
+                                        <p class="starability-result" data-rating=<%= review.rating%>>
+                                            Rated: 3 stars
+                                        </p>
                             </div>
                             <form method="post" action="/listing/<%=list.id%>/reviews/<%=review.id%>?_method=DELETE">
                                 <button class="btn btn-dark btn-sm">Delete</button>
