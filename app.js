@@ -157,7 +157,7 @@ app.use((req,res,next)=>{
 */
 
 app.get("/", (req, res) => {
-    res.send("This is the world of wanderlust")
+    res.redirect("/listing");
 })
 
 app.use("/listing", listingRouter)
