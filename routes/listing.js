@@ -10,9 +10,10 @@ const passport = require("passport");
 //middleware require
 const {isLoggedIn, isOwner, validateListing} = require("../middleware.js");
 
+const multer = require("multer");
+const {storage}=  require("../cloudConfig.js");
 
-
-
+const upload = multer({storage}); 
 
 //index route
 router.get("/", wrapAsync(async (req, res) => {
@@ -42,11 +43,14 @@ router.get("/:id", wrapAsync(async (req, res) => {
 }))
 
 
-router.post("/",isLoggedIn,validateListing,wrapAsync(async (req, res) => {
+router.post("/",isLoggedIn,upload.single("listing[image]"),validateListing,wrapAsync(async (req, res) => {
 
     // console.log(req.body);
+    let url = req.file.path;
+    let filename = req.file.filename;
     let newlist = new Listing(req.body.listing);
     newlist.owner = req.user._id;
+    newlist.image = {url,filename};
     await newlist.save();
     req.flash("success","list successfully added!");
     res.redirect("/listing");
